@@ -17,9 +17,10 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 RUN mkdir /usr/local/registry-app-${VERSION_REG_APP}
 
 # Copy the data into the building container
-COPY LICENSE.txt /usr/local/registry-app-${VERSION_REG_APP}
+COPY README.md /usr/local/registry-app-${VERSION_REG_APP}
+COPY SECURITY.md /usr/local/registry-app-${VERSION_REG_APP}
+COPY LICENSE.md /usr/local/registry-app-${VERSION_REG_APP}
 COPY NOTICE.txt /usr/local/registry-app-${VERSION_REG_APP}
-COPY README-PACKAGE.txt /usr/local/registry-app-${VERSION_REG_APP}
 COPY pom.xml /usr/local/registry-app-${VERSION_REG_APP}
 COPY settings.xml /usr/local/registry-app-${VERSION_REG_APP}
 COPY src /usr/local/registry-app-${VERSION_REG_APP}/src
@@ -50,3 +51,17 @@ RUN mkdir -p /usr/local/dist \
           sed -e 's/CHANGE_ME/PSA/' > \
           /var/local/harvest/conf/examples/bundles.xml ) && \
     cp -r target/*/dph_example_archive/* /var/local/harvest/archive
+
+
+# 🤔 TODO: Are these packages needed at run-time?
+# - curl
+# - maven
+# - tar
+# If not, they should be uninstalled in a final `RUN` statement.
+#
+# Regardless, `/var/alib/apt/lists/*` should always be deleted at the end.
+#
+# Also: Running `mvn` within a Dockerfile is a little odd. Having files like
+# `SECURITY.md` or `NOTICE.txt` in an image doesn't feel quite right! 😅
+#
+# 🤔 TODO: Is `ubuntu` the right base image? How about `openjdk:11-slim`?
